@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>宣道會 LOGO QR Code 產生器</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- QRCode.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 shadow-sm py-4 px-6">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-black rounded-lg flex items-center justify-center text-white font-bold text-xl shadow">
+          <i class="fa-solid fa-qrcode"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-slate-900 leading-tight">宣道會 LOGO QR Code 產生器</h1>
+          <p class="text-xs text-slate-500">自訂網址與中央圖片大小，快速生成高品質 QR Code</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-5xl mx-auto w-full p-4 sm:p-6 lg:p-8 flex-grow">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Control Panel (Left Column) -->
+      <section class="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
+        <h2 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-indigo-600"></i> 設定與控制項
+        </h2>
+
+        <!-- 1. URL Input -->
+        <div>
+          <label for="qr-text" class="block text-sm font-semibold text-slate-700 mb-2">
+            網址或文字內容 (URL / Text)
+          </label>
+          <div class="relative rounded-xl shadow-sm">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <i class="fa-solid fa-link"></i>
+            </div>
+            <input 
+              type="text" 
+              id="qr-text" 
+              class="block w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+              placeholder="https://example.com" 
+              value="https://www.cmac.org.hk/"
+            />
+          </div>
+          <p class="mt-1.5 text-xs text-slate-500">輸入您希望 QR Code 掃描後開啟的網址。</p>
+        </div>
+
+        <!-- 2. Logo Size Slider -->
+        <div>
+          <div class="flex justify-between items-center mb-2">
+            <label for="logo-size" class="text-sm font-semibold text-slate-700">
+              中間圖片大小 (Logo Size)
+            </label>
+            <span id="logo-size-value" class="text-sm font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full">22%</span>
+          </div>
+          <input 
+            type="range" 
+            id="logo-size" 
+            min="10" 
+            max="30" 
+            value="22" 
+            step="1" 
+            class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+          />
+          <div class="flex justify-between text-xs text-slate-400 mt-1">
+            <span>小 (10%)</span>
+            <span>建議區域 (18% - 24%)</span>
+            <span>大 (30%)</span>
+          </div>
+        </div>
+
+        <!-- 3. Logo Padding & Shape -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="logo-bg-shape" class="block text-sm font-semibold text-slate-700 mb-2">
+              LOGO 背景保護框形狀
+            </label>
+            <select id="logo-bg-shape" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <option value="circle">圓形 (Circle)</option>
+              <option value="rounded" selected>圓角方形 (Rounded Square)</option>
+              <option value="square">正方形 (Square)</option>
+            </select>
+          </div>
+          <div>
+            <label for="logo-padding" class="block text-sm font-semibold text-slate-700 mb-2">
+              白邊保護寬度
+            </label>
+            <select id="logo-padding" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <option value="2">精細 (小)</option>
+              <option value="4" selected>標準 (中)</option>
+              <option value="6">寬鬆 (大)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 4. Custom Logo Upload -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-2">
+            LOGO 圖片設定
+          </label>
+          <div class="flex flex-wrap items-center gap-3">
+            <label class="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition">
+              <i class="fa-solid fa-upload text-indigo-600"></i> 上傳其他圖片
+              <input type="file" id="custom-logo-input" accept="image/*" class="hidden" />
+            </label>
+
+            <button 
+              id="reset-logo-btn" 
+              type="button" 
+              class="bg-white hover:bg-slate-50 text-slate-600 border border-slate-300 px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition"
+            >
+              <i class="fa-solid fa-rotate-left"></i> 恢復預設宣道會 LOGO
+            </button>
+          </div>
+          <p class="mt-2 text-xs text-slate-500">預設已自動為您載入「基督教宣道會」黑白四方徽號。</p>
+        </div>
+
+        <!-- Info Tip -->
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-3.5 flex items-start gap-3 text-xs text-amber-800">
+          <i class="fa-solid fa-triangle-exclamation text-amber-600 text-base mt-0.5"></i>
+          <div>
+            <span class="font-bold">提示：</span>我們已將 QR Code 容錯率固定設置為最高等級 <strong>Level H (30%)</strong>，即使中央加上圖片也能保持極高的辨識度與掃描成功率。
+          </div>
+        </div>
+      </section>
+
+      <!-- Preview & Download Area (Right Column) -->
+      <section class="lg:col-span-5 flex flex-col justify-between items-center bg-white rounded-2xl shadow-sm border border-slate-200 p-6 text-center">
+        <div class="w-full">
+          <h2 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3 mb-6 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-eye text-indigo-600"></i> 即時預覽
+          </h2>
+
+          <!-- Hidden QR Canvas container for raw QR generation -->
+          <div id="qrcode-raw" class="hidden"></div>
+
+          <!-- Canvas Preview Card -->
+          <div class="relative inline-block bg-white p-4 rounded-2xl shadow-lg border border-slate-100 mb-4 group">
+            <canvas id="qr-canvas" class="max-w-full h-auto rounded-lg mx-auto transition-transform duration-300 group-hover:scale-[1.01]"></canvas>
+            
+            <!-- Floating badge -->
+            <span class="absolute top-2 right-2 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+              Level H 高容錯
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-400 mb-6">您可以直接拿手機相機對準上方預覽畫面進行測試掃描</p>
+        </div>
+
+        <!-- Action Button -->
+        <div class="w-full space-y-3">
+          <button 
+            id="download-btn" 
+            class="w-full py-3.5 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 text-base active:scale-[0.99]"
+          >
+            <i class="fa-solid fa-download"></i> 下載 QR Code (高清 PNG)
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-500">
+    <p>宣道會 LOGO QR Code 產生器 &copy; 專為宣道會各堂會與機構設計之便利工具</p>
+  </footer>
+
+  <!-- Logic Script -->
+  <script>
+    // State Variables
+    let currentLogoImg = new Image();
+    let isDefaultLogo = true;
+
+    // DOM Elements
+    const qrTextInput = document.getElementById('qr-text');
+    const logoSizeInput = document.getElementById('logo-size');
+    const logoSizeValue = document.getElementById('logo-size-value');
+    const logoBgShapeSelect = document.getElementById('logo-bg-shape');
+    const logoPaddingSelect = document.getElementById('logo-padding');
+    const customLogoInput = document.getElementById('custom-logo-input');
+    const resetLogoBtn = document.getElementById('reset-logo-btn');
+    const downloadBtn = document.getElementById('download-btn');
+    const rawQrContainer = document.getElementById('qrcode-raw');
+    const mainCanvas = document.getElementById('qr-canvas');
+    const ctx = mainCanvas.getContext('2d');
+
+    /**
+     * Generate C&MA Diamond Logo programmatically into an SVG Data URL 
+     * to guarantee crisp rendering without external image dependencies.
+     */
+    function createCMAAllianceLogoSVG() {
+      const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+        <rect width="500" height="500" fill="white"/>
+        <g transform="translate(250,250) rotate(45)">
+          <rect x="-160" y="-160" width="320" height="320" fill="none" stroke="black" stroke-width="28"/>
+        </g>
+        
+        <!-- Text Central C.M.A Christian Alliance Chinese -->
+        <text x="250" y="195" font-family="'Noto Sans TC', sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="black">基 督 教</text>
+        <text x="250" y="240" font-family="'Noto Sans TC', sans-serif" font-size="34" font-weight="900" text-anchor="middle" fill="black">宣</text>
+        <text x="250" y="280" font-family="'Noto Sans TC', sans-serif" font-size="22" font-weight="bold" text-anchor="middle" fill="black">道</text>
+        <text x="250" y="325" font-family="'Noto Sans TC', sans-serif" font-size="34" font-weight="900" text-anchor="middle" fill="black">會</text>
+
+        <!-- Top Corner: Cross -->
+        <g transform="translate(250, 88)">
+          <path d="M-8,-25 H8 V-8 H25 V8 H8 V25 H-8 V8 H-25 V-8 H-8 Z" fill="black"/>
+        </g>
+
+        <!-- Bottom Corner: Pitcher (Laver / Jug) -->
+        <g transform="translate(250, 412)">
+          <path d="M-12,-18 C-12,-18 -4,-22 0,-22 C4,-22 12,-18 12,-18 C12,-10 16,-4 18,4 C20,12 14,20 0,22 C-14,20 -20,12 -18,4 C-16,-4 -12,-10 -12,-18 Z" fill="black"/>
+          <path d="M-14,-6 C-22,-6 -22,8 -14,10" fill="none" stroke="black" stroke-width="4" stroke-linecap="round"/>
+        </g>
+
+        <!-- Left Corner: Crown -->
+        <g transform="translate(88, 250)">
+          <path d="M-22,-10 L-14,14 L0,-6 L14,14 L22,-10 L16,18 L-16,18 Z" fill="black"/>
+          <rect x="-18" y="20" width="36" height="5" fill="black"/>
+        </g>
+
+        <!-- Right Corner: Cup / Chalice -->
+        <g transform="translate(412, 250)">
+          <path d="M-16,-20 H16 C16,-2 -4,12 0,12 V22 H-10 V26 H10 V22 H0 C4,12 -16,-2 -16,-20 Z" fill="black"/>
+        </g>
+
+        <!-- Outer Corner Letters C M A -->
+        <!-- Top Left Corner 'C' -->
+        <text x="135" y="160" font-family="sans-serif" font-size="38" font-weight="bold" text-anchor="middle" fill="black" transform="rotate(-45 135 160)">C</text>
+        <!-- Top Right Corner 'C' -->
+        <text x="365" y="160" font-family="sans-serif" font-size="38" font-weight="bold" text-anchor="middle" fill="black" transform="rotate(45 365 160)">C</text>
+        <!-- Bottom Left Corner 'M' -->
+        <text x="135" y="360" font-family="sans-serif" font-size="36" font-weight="bold" text-anchor="middle" fill="black" transform="rotate(45 135 360)">M</text>
+        <!-- Bottom Right Corner 'A' -->
+        <text x="365" y="360" font-family="sans-serif" font-size="36" font-weight="bold" text-anchor="middle" fill="black" transform="rotate(-45 365 360)">A</text>
+      </svg>
+      `;
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    }
+
+    // Load Default Logo
+    function loadDefaultLogo() {
+      isDefaultLogo = true;
+      currentLogoImg = new Image();
+      currentLogoImg.onload = () => {
+        renderQRCode();
+      };
+      currentLogoImg.src = createCMAAllianceLogoSVG();
+    }
+
+    /**
+     * Render the complete QR Code with Embedded Center Logo onto the Canvas
+     */
+    function renderQRCode() {
+      const text = qrTextInput.value.trim() || "https://www.cmac.org.hk/";
+      
+      // Clear temporary HTML container
+      rawQrContainer.innerHTML = "";
+
+      // 1. Generate Raw QR Code using qrcode.js with Level H Error Correction
+      const qrSize = 1000; // Generate high-resolution base
+      new QRCode(rawQrContainer, {
+        text: text,
+        width: qrSize,
+        height: qrSize,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H // 30% error tolerance
+      });
+
+      // Wait brief tick for qrcode.js to generate img or canvas
+      setTimeout(() => {
+        const qrImageElement = rawQrContainer.querySelector('img') || rawQrContainer.querySelector('canvas');
+        if (!qrImageElement) return;
+
+        // Ensure source is loaded
+        const baseQrImg = new Image();
+        baseQrImg.onload = () => {
+          // Set main canvas size
+          const canvasSize = 800; // Resolution of final canvas
+          mainCanvas.width = canvasSize;
+          mainCanvas.height = canvasSize;
+
+          // Draw base QR code
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, canvasSize, canvasSize);
+          ctx.drawImage(baseQrImg, 0, 0, canvasSize, canvasSize);
+
+          // Draw center logo if image is ready
+          if (currentLogoImg && currentLogoImg.complete) {
+            drawCenterLogo(canvasSize);
+          }
+        };
+
+        if (qrImageElement instanceof HTMLCanvasElement) {
+          baseQrImg.src = qrImageElement.toDataURL("image/png");
+        } else {
+          baseQrImg.src = qrImageElement.src;
+        }
+      }, 50);
+    }
+
+    /**
+     * Draw the Logo with background protection shape in the center
+     */
+    function drawCenterLogo(canvasSize) {
+      const logoPercent = parseInt(logoSizeInput.value, 10) / 100;
+      const logoSize = canvasSize * logoPercent;
+      const centerX = canvasSize / 2;
+      const centerY = canvasSize / 2;
+
+      const paddingExtra = parseInt(logoPaddingSelect.value, 10) * 2;
+      const bgSize = logoSize + paddingExtra * 4;
+      const bgShape = logoBgShapeSelect.value;
+
+      ctx.save();
+
+      // 1. Draw Background Protection Box (White Background)
+      ctx.fillStyle = "#ffffff";
+      ctx.shadowColor = "rgba(0, 0, 0, 0.15)";
+      ctx.shadowBlur = 12;
+
+      ctx.beginPath();
+      if (bgShape === "circle") {
+        ctx.arc(centerX, centerY, bgSize / 2, 0, Math.PI * 2);
+      } else if (bgShape === "rounded") {
+        const cornerRadius = bgSize * 0.2;
+        const x = centerX - bgSize / 2;
+        const y = centerY - bgSize / 2;
+        ctx.roundRect(x, y, bgSize, bgSize, cornerRadius);
+      } else {
+        // square
+        ctx.fillRect(centerX - bgSize / 2, centerY - bgSize / 2, bgSize, bgSize);
+      }
+      ctx.fill();
+
+      // Reset Shadow
+      ctx.shadowColor = "transparent";
+
+      // 2. Draw Logo Image
+      const logoX = centerX - logoSize / 2;
+      const logoY = centerY - logoSize / 2;
+
+      ctx.drawImage(currentLogoImg, logoX, logoY, logoSize, logoSize);
+
+      ctx.restore();
+    }
+
+    // Event Listeners
+    qrTextInput.addEventListener('input', renderQRCode);
+
+    logoSizeInput.addEventListener('input', (e) => {
+      logoSizeValue.textContent = `${e.target.value}%`;
+      renderQRCode();
+    });
+
+    logoBgShapeSelect.addEventListener('change', renderQRCode);
+    logoPaddingSelect.addEventListener('change', renderQRCode);
+
+    // Custom Image Upload Handler
+    customLogoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const userImg = new Image();
+        userImg.onload = () => {
+          currentLogoImg = userImg;
+          isDefaultLogo = false;
+          renderQRCode();
+        };
+        userImg.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Reset Logo Handler
+    resetLogoBtn.addEventListener('click', () => {
+      customLogoInput.value = "";
+      loadDefaultLogo();
+    });
+
+    // Download PNG Button Handler
+    downloadBtn.addEventListener('click', () => {
+      const text = qrTextInput.value.trim() || "qrcode";
+      const filename = `alliance-qrcode-${Date.now()}.png`;
+      
+      // Temporary link for download
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = mainCanvas.toDataURL('image/png', 1.0);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    // Initialize Page
+    window.onload = () => {
+      loadDefaultLogo();
+    };
+  </script>
+</body>
+</html>
